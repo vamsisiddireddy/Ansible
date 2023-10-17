@@ -1,0 +1,22 @@
+---
+- name: Run a Command Only Once
+  hosts: your_target_hosts
+  tasks:
+    - name: Execute the command (only once)
+      command: your_command_here
+      register: command_output
+      ignore_errors: true
+      run_once: true
+
+    - name: Check the output
+      set_fact:
+        command_executed: "{{ command_output.rc == 0 }}"
+
+    - name: Display a debug message
+      debug:
+        msg: "Command already executed, skipping."
+      when: command_executed
+
+    - name: Execute the command if not already executed
+      command: your_command_here
+      when: not command_executed
